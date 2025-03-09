@@ -21,6 +21,6 @@ jobs:
           
           make setup
           
-          sudo systemctl restart python-code-runner
+          sudo systemctl restart chiroqcha
           
           echo "Deployment completed successfully!"
