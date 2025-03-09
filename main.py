@@ -8,9 +8,10 @@ import tempfile
 import logging
 
 app = Flask(__name__)
-
-CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": ["Content-Type", "Authorization"]}})
-
+CORS(app, resources={r"/*": {"origins": "*", 
+                            "methods": ["GET", "POST", "OPTIONS"], 
+                            "allow_headers": ["Content-Type", "Authorization", "Accept"],
+                            "supports_credentials": False}})
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
