@@ -1,3 +1,4 @@
+import subprocess
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import docker
@@ -30,17 +31,16 @@ def run_code_in_docker(code, timeout=10):
         logger.info(f"Konteyner yaratilmoqda: {container_name}")
         container = client.containers.run(
             "python:3.9-slim", 
-            "python /code/script.py", # Bajarish buyrug'i
+            "python /code/script.py", 
             volumes={temp_dir: {"bind": "/code", "mode": "ro"}},
             name=container_name,
             detach=True,
-            mem_limit="50m", # Xotira cheklovi
+            mem_limit="50m",
             cpu_period=100000,
-            cpu_quota=25000, # 25% CPU cheklovi
-            network_mode="none" # Tarmoq ulanishlarini o'chirish
+            cpu_quota=25000, 
+            network_mode="none" 
         )
         
-        # Belgilangan vaqt ichida bajarilishini kutish
         result = container.wait(timeout=timeout)
         logs = container.logs().decode("utf-8")
         
@@ -56,7 +56,6 @@ def run_code_in_docker(code, timeout=10):
             "status": -1
         }
     finally:
-        # Konteyner va faylni tozalash
         try:
             client.containers.get(container_name).remove(force=True)
             os.remove(file_path)
@@ -68,9 +67,8 @@ def run_code_in_docker(code, timeout=10):
 @app.route('/api/execute', methods=['POST', 'OPTIONS'])
 def execute_code():
     """
-    Kodni qabul qilib bajarish uchun API endpoint
+    This function accepts code and executes it
     """
-    # OPTIONS so'rovlari uchun javob
     if request.method == 'OPTIONS':
         return '', 200
         
@@ -82,40 +80,33 @@ def execute_code():
         code = data['code']
         language = data.get('language', 'python') # Kelajakda boshqa tillar uchun
         
-        # Hozircha faqat Python-ni qo'llab-quvvatlash
         if language != 'python':
-            return jsonify({"error": f"{language} tili hozircha qo'llab-quvvatlanmaydi"}), 400
+            return jsonify({"error": f"{language} language is not supported yet"}), 400
             
-        # Kodni bajarish
         result = run_code_in_docker(code)
         return jsonify(result)
     except Exception as e:
         logger.error(f"API xatosi: {str(e)}")
         return jsonify({"error": str(e), "status": -1}), 500
 
-# Server holati tekshirish uchun endpoint
 @app.route('/api/status', methods=['GET'])
 def status():
     return jsonify({"status": "ok"})
 
 if __name__ == '__main__':
-    # Docker-ni tekshirish
     try:
-        # Docker socket faylini aniq ko'rsatish
-        # client = docker.DockerClient(base_url='unix://var/run/docker.sock')
-        # Yoki
         client = docker.from_env(timeout=30)
         client.ping()
         logger.info("Docker server bilan bog'lanish muvaffaqiyatli")
     except Exception as e:
-        logger.error(f"Docker server bilan bog'lanishda xato: {str(e)}")
-        print("XATO: Docker daemon ishga tushirilganini tekshiring")
-        print("Yechim: 'sudo systemctl start docker' buyrug'ini bajaring")
-        print("Yoki foydalanuvchingizni docker guruhiga qo'shing: 'sudo usermod -aG docker $USER'")
-        print("So'ng tizimdan chiqib, qayta kiring yoki 'newgrp docker' buyrug'ini bajaring")
+        logger.error(f"Docker server is not running: {str(e)}")
+     
+        subprocess.run(["sudo", "systemctl", "start", "docker"])
+
+        # sudo usermod -aG docker $USER
+        subprocess.run(["sudo", "usermod", "-aG", "docker", "$USER"])
+        # newgrp docker
+        subprocess.run(["newgrp", "docker"])
         exit(1)
         
-    # Serverni ishga tushirish
-    print("API server http://localhost:5000 manzilida ishga tushirildi")
-    # Debug rejimini o'chirib qo'yish kerak production muhitda
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
