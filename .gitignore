@@ -4,3 +4,9 @@ devserver.sh
 .env.local
 
 env/
+
+*.log
+*.tmp
+__pycache__/
+*.py[cod]
+*$py.class
