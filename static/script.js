@@ -2,13 +2,7 @@
         const API_URL = "http://92.255.111.99:5000"
         
         function checkServerStatus() {
-            fetch(`${API_URL}/api/status`, {
-                method: 'GET',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+            fetch(`${API_URL}/api/status`)
                 .then(response => {
                     if (response.ok) {
                         return response.json();
