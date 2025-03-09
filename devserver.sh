@@ -1,3 +1,2 @@
 #!/bin/sh
-source .venv/bin/activate
-python -m flask --app main run --debug
+python3 -m flask --app main run --debug
