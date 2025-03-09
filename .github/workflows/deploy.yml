@@ -16,11 +16,6 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           cd /home/husniddin/chiroqcha
-          
-          git pull
-          
-          make setup
-          
-          make supervisor-restart
+          make server-start
           
           echo "Deployment completed successfully!"

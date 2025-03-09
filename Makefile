@@ -1,15 +1,30 @@
 .PHONY: setup run test clean deploy restart logs
 
-setup:
-
-	pip install -r requirements.txt
 
 env:
 	source env/bin/activate
 
+setup:
+	make env 
+	pip install -r requirements.txt
+
+server-start:
+	make env 
+	git pull
+	make supervisor-stop
+	make setup
+	make supervisor-start
+
+server-stop:
+	make supervisor-stop
+
+server-restart:
+	make supervisor-restart
+
 run:
 	make env 
 	python main.py
+
 
 supervisor-start:
 	supervisorctl start chiroqcha
