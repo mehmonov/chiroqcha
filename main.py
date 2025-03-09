@@ -109,5 +109,6 @@ if __name__ == '__main__':
         # newgrp docker
         subprocess.run(["newgrp", "docker"])
         exit(1)
-        
-    app.run(host='0.0.0.0', port=5000)
+    ssl_context = ('cert.pem', 'key.pem')  # O'z-o'zidan imzolangan sertifikat uchun
+
+    app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
