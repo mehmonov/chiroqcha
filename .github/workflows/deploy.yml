@@ -21,6 +21,6 @@ jobs:
           
           make setup
           
-          sudo systemctl restart chiroqcha
+          make supervisor-restart
           
           echo "Deployment completed successfully!"

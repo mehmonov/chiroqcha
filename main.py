@@ -28,7 +28,7 @@ def run_code_in_docker(code, timeout=10):
         f.write(code)
     
     try:
-        logger.info(f"Konteyner yaratilmoqda: {container_name}")
+        logger.info(f"container is being created: {container_name}")
         container = client.containers.run(
             "python:3.9-slim", 
             "python /code/script.py", 

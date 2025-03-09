@@ -1,11 +1,22 @@
 .PHONY: setup run test clean deploy restart logs
 
 setup:
+
 	pip install -r requirements.txt
 
+env:
+	source env/bin/activate
+
 run:
+	make env 
 	python main.py
-	
+
+supervisor-start:
+	supervisorctl start chiroqcha
+supervisor-stop:
+	supervisorctl stop chiroqcha
+supervisor-restart:
+	supervisorctl restart chiroqcha
 
 run-background:
 	nohup python main.py > app.log 2>&1 &
