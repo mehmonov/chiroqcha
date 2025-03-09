@@ -10,7 +10,6 @@ setup:
 
 server-start:
 	make env 
-	git pull
 	make supervisor-stop
 	make setup
 	make supervisor-start
