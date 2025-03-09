@@ -1,5 +1,5 @@
     document.addEventListener('DOMContentLoaded', function() {
-        const API_URL = 'http://localhost:5000';
+        const API_URL = process.env.API_URL || 'http://localhost:5000';
         
         function checkServerStatus() {
             fetch(`${API_URL}/api/status`)
