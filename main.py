@@ -103,12 +103,19 @@ if __name__ == '__main__':
         logger.error(f"Docker server is not running: {str(e)}")
      
         subprocess.run(["sudo", "systemctl", "start", "docker"])
-
-        # sudo usermod -aG docker $USER
         subprocess.run(["sudo", "usermod", "-aG", "docker", "$USER"])
-        # newgrp docker
         subprocess.run(["newgrp", "docker"])
         exit(1)
-    ssl_context = ('cert.pem', 'key.pem')  # O'z-o'zidan imzolangan sertifikat uchun
-
-    app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
+    
+    cert_file = '/root/ssl-cert/cert.pem'
+    key_file = '/root/ssl-cert/key.pem'
+        
+        
+    if os.path.exists(cert_file) and os.path.exists(key_file):
+        # HTTPS bilan ishga tushirish
+        ssl_context = (cert_file, key_file)
+        app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
+    else:
+        # Sertifikat fayllarini yaratish
+        logger.info("SSL sertifikat fayllari topilmadi. HTTP rejimida ishga tushirilmoqda...")
+        app.run(host='0.0.0.0', port=5000)
