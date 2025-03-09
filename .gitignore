@@ -9,4 +9,4 @@ env/
 *.tmp
 __pycache__/
 *.py[cod]
-*$py.class
+*$py.class  
