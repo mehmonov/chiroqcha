@@ -112,10 +112,8 @@ if __name__ == '__main__':
         
         
     if os.path.exists(cert_file) and os.path.exists(key_file):
-        # HTTPS bilan ishga tushirish
         ssl_context = (cert_file, key_file)
         app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
     else:
-        # Sertifikat fayllarini yaratish
         logger.info("SSL sertifikat fayllari topilmadi. HTTP rejimida ishga tushirilmoqda...")
         app.run(host='0.0.0.0', port=5000)

@@ -21,7 +21,6 @@ server-restart:
 	make supervisor-restart
 
 run:
-	make env 
 	python main.py
 
 
