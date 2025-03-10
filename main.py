@@ -22,6 +22,21 @@ def run_code_in_docker(code, timeout=10):
     client = docker.from_env()
     container_name = f"python-runner-{uuid.uuid4()}"
     
+    # Check if image exists locally
+    try:
+        client.images.get("python:3.9-slim")
+    except docker.errors.ImageNotFound:
+        logger.info("Image not found locally, pulling from Docker Hub")
+        try:
+            client.images.pull("python:3.9-slim")
+        except Exception as e:
+            logger.error(f"Failed to pull image: {str(e)}")
+            return {
+                "output": "",
+                "error": "Server error: Failed to pull Docker image. Please try again later.",
+                "status": -1
+            }
+    
     temp_dir = tempfile.mkdtemp()
     file_path = os.path.join(temp_dir, "script.py")
     
