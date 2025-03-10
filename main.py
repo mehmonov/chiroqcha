@@ -116,19 +116,10 @@ if __name__ == '__main__':
         logger.info("Docker server bilan bog'lanish muvaffaqiyatli")
     except Exception as e:
         logger.error(f"Docker server is not running: {str(e)}")
-     
         subprocess.run(["sudo", "systemctl", "start", "docker"])
         subprocess.run(["sudo", "usermod", "-aG", "docker", "$USER"])
         subprocess.run(["newgrp", "docker"])
         exit(1)
     
-    cert_file = '/root/ssl-cert/cert.pem'
-    key_file = '/root/ssl-cert/key.pem'
-        
-        
-    if os.path.exists(cert_file) and os.path.exists(key_file):
-        ssl_context = (cert_file, key_file)
-        app.run(host='0.0.0.0', port=5000, ssl_context=ssl_context)
-    else:
-        logger.info("SSL sertifikat fayllari topilmadi. HTTP rejimida ishga tushirilmoqda...")
-        app.run(host='0.0.0.0', port=5000)
+    # Oddiy HTTP portda ishga tushirish
+    app.run(host='0.0.0.0', port=5000)
