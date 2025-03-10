@@ -1,5 +1,5 @@
     document.addEventListener('DOMContentLoaded', function() {
-        const API_URL = "http://92.255.111.99:5000"
+        const API_URL = window.location.protocol + "//92.255.111.99:5000"
         
         function checkServerStatus() {
             fetch(`${API_URL}/api/status`, {
